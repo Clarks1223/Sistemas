@@ -1,12 +1,14 @@
 import { createContext, useReducer } from 'react';
 import c04Data from '../json/c04.json';
+import i01Data from '../json/i01.json';
+import i02Data from '../json/i02.json';
 
 export const FinancialContext = createContext();
 
 const initialState = {
   c04: c04Data,
-  i01: [],
-  i02: [],
+  i01: i01Data,
+  i02: i02Data,
 };
 
 const ADD_RECORD = 'ADD_RECORD';
