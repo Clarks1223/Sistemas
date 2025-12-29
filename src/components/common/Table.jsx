@@ -18,7 +18,7 @@ export function Table({ columns, data, onEdit, onDelete }) {
   if (!data || data.length === 0) {
     return (
       <Box sx={{ p: 4, textAlign: 'center' }}>
-        <Typography color="text.secondary">No records found.</Typography>
+        <Typography color="text.secondary">No hay registros.</Typography>
       </Box>
     );
   }

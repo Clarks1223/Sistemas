@@ -15,12 +15,22 @@ export function StructureC04() {
   const [editingRecord, setEditingRecord] = useState(null);
 
   const columns = [
-    { header: 'Description', accessor: 'description' },
-    { header: 'Amount', accessor: 'amount' },
-    { header: 'Currency', accessor: 'currency' },
-    { header: 'Date', accessor: 'date' },
-    { header: 'Category', accessor: 'category' },
-    { header: 'Status', accessor: 'status' },
+    { header: 'Tipo Id', accessor: 'idType' },
+    { header: 'No. Id', accessor: 'idNumber' },
+    { header: 'No. préstamo', accessor: 'operationNumber' },
+    { header: 'Código bien', accessor: 'assetCode' },
+    { header: 'Tipo bien', accessor: 'assetType' },
+    { header: 'Emisor', accessor: 'issuer' },
+    { header: 'Fecha de emisión', accessor: 'issueDate' },
+    { header: 'Fecha vencimiento', accessor: 'maturityDate' },
+    { header: 'Valor nominal', accessor: 'nominalValue' },
+    { header: 'Fecha contabilización', accessor: 'accountingDate' },
+    { header: 'Valor en libros', accessor: 'bookValue' },
+    { header: 'Valor último avalúo', accessor: 'lastAppraisalValue' },
+    { header: 'Valor provisión', accessor: 'provisionValue' },
+    { header: 'Fecha realización', accessor: 'realizationDate' },
+    { header: 'Valor realización', accessor: 'realizationValue' },
+    { header: 'Estado', accessor: 'recordStatus' },
   ];
 
   const handleAdd = () => {

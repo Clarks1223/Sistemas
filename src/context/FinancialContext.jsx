@@ -1,9 +1,10 @@
-import React, { createContext, useReducer } from 'react';
+import { createContext, useReducer } from 'react';
+import c04Data from '../json/c04.json';
 
 export const FinancialContext = createContext();
 
 const initialState = {
-  c04: [],
+  c04: c04Data,
   i01: [],
   i02: [],
 };

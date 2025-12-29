@@ -2,7 +2,7 @@ import React from 'react';
 import { useFinancialData } from '../hooks/useFinancialData';
 import { Table } from '../components/common/Table';
 import { Button, Typography, Box } from '@mui/material';
-import AddIcon from '@mui/icons-material/Add';
+
 
 export function StructureI02() {
   const { getRecords } = useFinancialData();
@@ -20,12 +20,7 @@ export function StructureI02() {
          <Typography variant="h5" component="h1" fontWeight="bold">
             Structure I02
          </Typography>
-         <Button 
-            variant="contained" 
-            startIcon={<AddIcon />}
-         >
-           Add Record
-         </Button>
+
       </Box>
       <Table columns={columns} data={data} />
     </Box>
