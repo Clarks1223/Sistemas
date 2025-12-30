@@ -4,18 +4,18 @@ from api.models import StructureC04, StructureI01, StructureI02
 # aqui las demas validaciones
 
 class StructureC04Serializer(serializers.ModelSerializer):
-    issueDate = serializers.DateField(input_formats=['%d/%m/%Y'])
-    maturityDate = serializers.DateField(input_formats=['%d/%m/%Y'])
-    accountingDate = serializers.DateField(input_formats=['%d/%m/%Y'])
-    realizationDate = serializers.DateField(input_formats=['%d/%m/%Y'], required=False, allow_null=True)
+    issueDate = serializers.DateField(input_formats=['%d/%m/%Y'], format='%d/%m/%Y')
+    maturityDate = serializers.DateField(input_formats=['%d/%m/%Y'], format='%d/%m/%Y')
+    accountingDate = serializers.DateField(input_formats=['%d/%m/%Y'], format='%d/%m/%Y')
+    realizationDate = serializers.DateField(input_formats=['%d/%m/%Y'], format='%d/%m/%Y', required=False, allow_null=True)
 
     class Meta:
         model = StructureC04
         fields = '__all__'
 
 class StructureI01Serializer(serializers.ModelSerializer):
-    issueDate = serializers.DateField(input_formats=['%d/%m/%Y'])
-    purchaseDate = serializers.DateField(input_formats=['%d/%m/%Y'])
+    issueDate = serializers.DateField(input_formats=['%d/%m/%Y'], format='%d/%m/%Y')
+    purchaseDate = serializers.DateField(input_formats=['%d/%m/%Y'], format='%d/%m/%Y')
 
     class Meta:
         model = StructureI01
