@@ -1,28 +1,39 @@
-import { createContext, useReducer } from 'react';
-import c04Data from '../json/c04.json';
+import { createContext, useReducer, useEffect } from 'react';
+import c04DataMock from '../json/c04.json'; // Backup/Initial Loading
 import i01Data from '../json/i01.json';
 import i02Data from '../json/i02.json';
+import { c04Service } from '../services/api';
 
 export const FinancialContext = createContext();
 
 const initialState = {
-  c04: c04Data,
+  c04: [], // Start empty, load from API
   i01: i01Data,
   i02: i02Data,
+  loading: { c04: false },
+  error: { c04: null }
 };
 
+const SET_RECORDS = 'SET_RECORDS';
 const ADD_RECORD = 'ADD_RECORD';
 const UPDATE_RECORD = 'UPDATE_RECORD';
 const DELETE_RECORD = 'DELETE_RECORD';
+const SET_ERROR = 'SET_ERROR';
+const SET_LOADING = 'SET_LOADING';
 
 function financialReducer(state, action) {
   const { type, payload } = action;
   
   switch (type) {
+    case SET_RECORDS:
+        return {
+            ...state,
+            [payload.structure]: payload.data
+        };
     case ADD_RECORD:
       return {
         ...state,
-        [payload.structure]: [...state[payload.structure], { ...payload.record, id: Date.now().toString() }],
+        [payload.structure]: [...state[payload.structure], payload.record],
       };
     case UPDATE_RECORD:
       return {
@@ -36,6 +47,10 @@ function financialReducer(state, action) {
         ...state,
         [payload.structure]: state[payload.structure].filter((item) => item.id !== payload.id),
       };
+    case SET_LOADING:
+        return { ...state, loading: { ...state.loading, [payload.structure]: payload.isLoading } };
+    case SET_ERROR:
+        return { ...state, error: { ...state.error, [payload.structure]: payload.error } };
     default:
       return state;
   }
@@ -44,16 +59,66 @@ function financialReducer(state, action) {
 export function FinancialProvider({ children }) {
   const [state, dispatch] = useReducer(financialReducer, initialState);
 
-  const addRecord = (structure, record) => {
-    dispatch({ type: ADD_RECORD, payload: { structure, record } });
+  // Load C04 Data on Mount
+  useEffect(() => {
+    const fetchC04 = async () => {
+        dispatch({ type: SET_LOADING, payload: { structure: 'c04', isLoading: true } });
+        try {
+            const response = await c04Service.getAll();
+            dispatch({ type: SET_RECORDS, payload: { structure: 'c04', data: response.data } });
+        } catch (error) {
+            console.error("Error fetching C04:", error);
+            dispatch({ type: SET_ERROR, payload: { structure: 'c04', error: error.message } });
+        } finally {
+            dispatch({ type: SET_LOADING, payload: { structure: 'c04', isLoading: false } });
+        }
+    };
+    fetchC04();
+  }, []);
+
+  const addRecord = async (structure, record) => {
+    if (structure === 'c04') {
+        try {
+            const response = await c04Service.create(record);
+            dispatch({ type: ADD_RECORD, payload: { structure, record: response.data } });
+        } catch (error) {
+             console.error("Error adding C04:", error);
+             alert("Error al guardar: " + (error.response?.data ? JSON.stringify(error.response.data) : error.message));
+        }
+    } else {
+        // Fallback for i01/i02 (local state)
+        dispatch({ type: ADD_RECORD, payload: { structure, record: { ...record, id: Date.now().toString() } } });
+    }
   };
 
-  const updateRecord = (structure, id, record) => {
-    dispatch({ type: UPDATE_RECORD, payload: { structure, id, record } });
+  const updateRecord = async (structure, id, record) => {
+    if (structure === 'c04') {
+        try {
+            // Using PATCH for partial updates usually better with forms, but PUT is also fine if full payload.
+            // Based on previous turn instructions, I will use PATCH or update logic.
+            const response = await c04Service.update(id, record); // Assuming full update based on form submit
+            dispatch({ type: UPDATE_RECORD, payload: { structure, id, record: response.data } });
+        } catch (error) {
+            console.error("Error updating C04:", error);
+            alert("Error al actualizar: " + (error.response?.data ? JSON.stringify(error.response.data) : error.message));
+        }
+    } else {
+        dispatch({ type: UPDATE_RECORD, payload: { structure, id, record } });
+    }
   };
 
-  const deleteRecord = (structure, id) => {
-    dispatch({ type: DELETE_RECORD, payload: { structure, id } });
+  const deleteRecord = async (structure, id) => {
+    if (structure === 'c04') {
+        try {
+            await c04Service.delete(id);
+            dispatch({ type: DELETE_RECORD, payload: { structure, id } });
+        } catch (error) {
+            console.error("Error deleting C04:", error);
+            alert("Error al eliminar");
+        }
+    } else {
+        dispatch({ type: DELETE_RECORD, payload: { structure, id } });
+    }
   };
 
   const getRecords = (structure) => state[structure] || [];

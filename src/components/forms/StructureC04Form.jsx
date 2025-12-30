@@ -20,7 +20,7 @@ const toInputDate = (dateStr) => {
 
 // Helper to convert YYYY-MM-DD to DD/MM/YYYY for storage
 const toStorageDate = (dateStr) => {
-  if (!dateStr) return '';
+  if (!dateStr) return null;
   const [year, month, day] = dateStr.split('-');
   return `${day}/${month}/${year}`;
 };
