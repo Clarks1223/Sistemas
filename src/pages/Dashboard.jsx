@@ -24,7 +24,7 @@ export function Dashboard() {
   return (
     <Box>
       <Typography variant="h4" component="h1" gutterBottom fontWeight="bold" color="text.primary">
-        Dashboard
+        Panel Principal
       </Typography>
       <Grid container spacing={3}>
         {cards.map((card, index) => (

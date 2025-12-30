@@ -33,7 +33,7 @@ export function Table({ columns, data, onEdit, onDelete }) {
                 {col.header}
               </TableCell>
             ))}
-            {(onEdit || onDelete) && <TableCell sx={{ fontWeight: 600 }}>Actions</TableCell>}
+            {(onEdit || onDelete) && <TableCell sx={{ fontWeight: 600 }}>Acciones</TableCell>}
           </TableRow>
         </TableHead>
         <TableBody>
@@ -45,7 +45,7 @@ export function Table({ columns, data, onEdit, onDelete }) {
             >
               {columns.map((col) => (
                 <TableCell key={col.accessor}>
-                  {row[col.accessor]}
+                  {col.render ? col.render(row) : row[col.accessor]}
                 </TableCell>
               ))}
               {(onEdit || onDelete) && (

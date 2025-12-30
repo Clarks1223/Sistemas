@@ -15,7 +15,7 @@ export function StructureI02() {
 
   const handleGenerate = () => {
     console.log('Generating export for I02:', data);
-    alert('Export generated to console (JSON format).');
+    alert('Exportación generada en consola (formato JSON).');
   };
 
   const handleSaveRecord = (formData) => {
@@ -33,7 +33,7 @@ export function StructureI02() {
   };
 
   const handleDelete = (id) => {
-    if (window.confirm('Are you sure you want to delete this record?')) {
+    if (window.confirm('¿Estás seguro de eliminar este registro?')) {
       deleteRecord('i02', id);
     }
   };
@@ -71,7 +71,7 @@ export function StructureI02() {
     <Box>
       <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
          <Typography variant="h5" component="h1" fontWeight="bold">
-            Structure I02
+            Estructura I02
          </Typography>
          <Box sx={{ display: 'flex', gap: 2 }}>
             <Button 
@@ -79,7 +79,7 @@ export function StructureI02() {
                 startIcon={<DownloadIcon />} 
                 onClick={handleGenerate}
             >
-                Generate
+                Generar
             </Button>
          </Box>
       </Box>

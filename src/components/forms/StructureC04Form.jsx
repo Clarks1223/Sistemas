@@ -44,6 +44,36 @@ const initialFormState = {
   recordStatus: 'A', // Default to Active (1 char)
 };
 
+const idTypeOptions = [
+  { value: 'C', label: 'CÉDULA' },
+  { value: 'R', label: 'RUC' },
+  { value: 'P', label: 'PASAPORTE' },
+  { value: 'F', label: 'REFUGIADO' },
+  { value: 'X', label: 'EXTRANJERO' },
+];
+
+const assetTypeOptions = [
+  { value: '110', label: 'TERRENOS' },
+  { value: '120', label: 'EDIFICACIONES' },
+  { value: '240', label: 'UNIDADES DE TRANSPORTE' },
+  { value: '230', label: 'MAQUINARIA Y EQUIPOS' },
+  { value: '350', label: 'ACCIONES Y PARTICIPACIONES' },
+  { value: '250', label: 'OTROS' },
+];
+
+const recordStatusOptions = [
+  { value: 'N', label: 'NUEVO' },
+  { value: 'A', label: 'ACTUALIZACIÓN' },
+  { value: 'X', label: 'SUSTITUCIÓN DE GARANTÍA' },
+  { value: 'T', label: 'SUSTITUCIÓN DE GARANTE / CODEUDOR (GT)' },
+  { value: 'E', label: 'ELIMINACIÓN (TARJETA DE CRÉDITO)' },
+  { value: 'D', label: 'HABILITADA / DESBLOQUEADA (TARJETA DE CRÉDITO)' },
+  { value: 'R', label: 'REPOSICIÓN (TARJETA DE CRÉDITO)' },
+  { value: 'S', label: 'APLICACIÓN RESOLUCIÓN JPRF F-2024-0123 (TARJETA DE CRÉDITO)' },
+];
+
+
+
 export function StructureC04Form({ initialData, onSubmit, onCancel }) {
   const [formData, setFormData] = useState(initialFormState);
   const [errors, setErrors] = useState({});
@@ -75,20 +105,20 @@ export function StructureC04Form({ initialData, onSubmit, onCancel }) {
 
   const validate = () => {
     const newErrors = {};
-    if (!formData.idType || formData.idType.length !== 1) newErrors.idType = 'Must be exactly 1 character';
-    if (!formData.idNumber || formData.idNumber.length > 15 || /\s/.test(formData.idNumber)) newErrors.idNumber = 'Max 15 chars, no spaces';
-    if (!formData.operationNumber || formData.operationNumber.length > 32) newErrors.operationNumber = 'Max 32 chars';
-    if (!formData.assetCode || formData.assetCode.length > 20) newErrors.assetCode = 'Max 20 chars';
-    if (!formData.assetType || formData.assetType.length !== 3) newErrors.assetType = 'Must be exactly 3 characters';
-    if (!formData.accountingDate) newErrors.accountingDate = 'Required';
-    if (!formData.bookValue || parseFloat(formData.bookValue) < 0) newErrors.bookValue = 'Required, >= 0';
-    if (!formData.provisionValue || parseFloat(formData.provisionValue) < 0) newErrors.provisionValue = 'Required, >= 0';
-    if (!formData.recordStatus || formData.recordStatus.length !== 1) newErrors.recordStatus = 'Must be exactly 1 character';
+    if (!formData.idType || formData.idType.length !== 1) newErrors.idType = 'Debe ser exactamente 1 carácter';
+    if (!formData.idNumber || formData.idNumber.length > 15 || /\s/.test(formData.idNumber)) newErrors.idNumber = 'Máx 15 caracteres, sin espacios';
+    if (!formData.operationNumber || formData.operationNumber.length > 32) newErrors.operationNumber = 'Máx 32 caracteres';
+    if (!formData.assetCode || formData.assetCode.length > 20) newErrors.assetCode = 'Máx 20 caracteres';
+    if (!formData.assetType || formData.assetType.length !== 3) newErrors.assetType = 'Debe ser exactamente 3 caracteres';
+    if (!formData.accountingDate) newErrors.accountingDate = 'Requerido';
+    if (!formData.bookValue || parseFloat(formData.bookValue) < 0) newErrors.bookValue = 'Requerido, >= 0';
+    if (!formData.provisionValue || parseFloat(formData.provisionValue) < 0) newErrors.provisionValue = 'Requerido, >= 0';
+    if (!formData.recordStatus || formData.recordStatus.length !== 1) newErrors.recordStatus = 'Debe ser exactamente 1 carácter';
 
     // Optional validations
-    if (formData.issuer && formData.issuer.length > 40) newErrors.issuer = 'Max 40 chars';
+    if (formData.issuer && formData.issuer.length > 40) newErrors.issuer = 'Máx 40 caracteres';
     if (formData.maturityDate && formData.issueDate && new Date(formData.maturityDate) < new Date(formData.issueDate)) {
-        newErrors.maturityDate = 'Cannot be before Issue Date';
+        newErrors.maturityDate = 'No puede ser anterior a la Fecha de Emisión';
     }
     
     setErrors(newErrors);
@@ -120,10 +150,11 @@ export function StructureC04Form({ initialData, onSubmit, onCancel }) {
 
   return (
     <Box component="form" onSubmit={handleSubmit} sx={{ mt: 1 }}>
-      <Typography variant="caption" sx={{ mb: 2, display: 'block', color: 'text.secondary' }}>* Required fields</Typography>
+      <Typography variant="caption" sx={{ mb: 2, display: 'block', color: 'text.secondary' }}>* Campos requeridos</Typography>
       <Grid container spacing={2}>
         <Grid item xs={12} md={6}>
             <TextField
+                select
                 fullWidth
                 label="Tipo Id *"
                 name="idType"
@@ -131,10 +162,14 @@ export function StructureC04Form({ initialData, onSubmit, onCancel }) {
                 onChange={handleChange}
                 error={!!errors.idType}
                 helperText={errors.idType}
-                inputProps={{ maxLength: 1 }}
-                placeholder="e.g. C"
                 variant="outlined"
-            />
+            >
+                {idTypeOptions.map((option) => (
+                    <MenuItem key={option.value} value={option.value}>
+                        {option.label}
+                    </MenuItem>
+                ))}
+            </TextField>
         </Grid>
         <Grid item xs={12} md={6}>
             <TextField
@@ -177,6 +212,7 @@ export function StructureC04Form({ initialData, onSubmit, onCancel }) {
         </Grid>
         <Grid item xs={12} md={6}>
             <TextField
+                select
                 fullWidth
                 label="Tipo Bien *"
                 name="assetType"
@@ -184,10 +220,14 @@ export function StructureC04Form({ initialData, onSubmit, onCancel }) {
                 onChange={handleChange}
                 error={!!errors.assetType}
                 helperText={errors.assetType}
-                inputProps={{ maxLength: 3 }}
-                placeholder="e.g. BND"
                 variant="outlined"
-            />
+            >
+                {assetTypeOptions.map((option) => (
+                    <MenuItem key={option.value} value={option.value}>
+                        {option.label}
+                    </MenuItem>
+                ))}
+            </TextField>
         </Grid>
         <Grid item xs={12} md={6}>
             <TextField
@@ -318,25 +358,31 @@ export function StructureC04Form({ initialData, onSubmit, onCancel }) {
         </Grid>
         <Grid item xs={12} md={6}>
              <TextField
+                select
                 fullWidth
                 label="Estado *"
                 name="recordStatus"
                 value={formData.recordStatus}
                 onChange={handleChange}
                 error={!!errors.recordStatus}
-                helperText={errors.recordStatus || "Must be 1 char (e.g. A, I)"}
-                inputProps={{ maxLength: 1 }}
+                helperText={errors.recordStatus}
                 variant="outlined"
-            />
+            >
+                {recordStatusOptions.map((option) => (
+                    <MenuItem key={option.value} value={option.value}>
+                        {option.label}
+                    </MenuItem>
+                ))}
+            </TextField>
         </Grid>
       </Grid>
       
       <Box sx={{ display: 'flex', justifyContent: 'flex-end', gap: 2, mt: 3, pt: 2, borderTop: 1, borderColor: 'divider' }}>
         <Button variant="outlined" onClick={onCancel} color="inherit">
-          Cancel
+          Cancelar
         </Button>
         <Button type="submit" variant="contained" color="primary">
-          {initialData ? 'Update Record' : 'Create Record'}
+          {initialData ? 'Actualizar Registro' : 'Crear Registro'}
         </Button>
       </Box>
     </Box>

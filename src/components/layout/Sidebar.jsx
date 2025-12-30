@@ -22,10 +22,10 @@ export function Sidebar({ variant = 'permanent', open, onClose }) {
   const location = useLocation();
 
   const navItems = [
-    { path: '/', label: 'Dashboard', icon: DashboardIcon },
-    { path: '/c04', label: 'Structure C04', icon: StorageIcon },
-    { path: '/i01', label: 'Structure I01', icon: TrendingUpIcon },
-    { path: '/i02', label: 'Structure I02', icon: SecurityIcon },
+    { path: '/', label: 'Panel', icon: DashboardIcon },
+    { path: '/c04', label: 'Estructura C04', icon: StorageIcon },
+    { path: '/i01', label: 'Estructura I01', icon: TrendingUpIcon },
+    { path: '/i02', label: 'Estructura I02', icon: SecurityIcon },
   ];
 
   const drawerContent = (

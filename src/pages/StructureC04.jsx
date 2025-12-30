@@ -14,12 +14,41 @@ export function StructureC04() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingRecord, setEditingRecord] = useState(null);
 
+  const idTypeMap = {
+    'C': 'CÉDULA',
+    'R': 'RUC',
+    'P': 'PASAPORTE',
+    'F': 'REFUGIADO',
+    'X': 'EXTRANJERO'
+  };
+
+  const assetTypeMap = {
+    '110': 'TERRENOS',
+    '120': 'EDIFICACIONES',
+    '240': 'UNIDADES DE TRANSPORTE',
+    '230': 'MAQUINARIA Y EQUIPOS',
+    '350': 'ACCIONES Y PARTICIPACIONES',
+    '250': 'OTROS'
+  };
+
+  const recordStatusMap = {
+    'N': 'NUEVO',
+    'A': 'ACTUALIZACIÓN',
+    'X': 'SUSTITUCIÓN DE GARANTÍA',
+    'T': 'SUSTITUCIÓN DE GARANTE / CODEUDOR (GT)',
+    'E': 'ELIMINACIÓN (TARJETA DE CRÉDITO)',
+    'D': 'HABILITADA / DESBLOQUEADA (TARJETA DE CRÉDITO)',
+    'R': 'REPOSICIÓN (TARJETA DE CRÉDITO)',
+    'S': 'APLICACIÓN RESOLUCIÓN JPRF F-2024-0123 (TARJETA DE CRÉDITO)'
+  };
+
+
   const columns = [
-    { header: 'Tipo Id', accessor: 'idType' },
+    { header: 'Tipo Id', accessor: 'idType', render: (row) => idTypeMap[row.idType] || row.idType },
     { header: 'No. Id', accessor: 'idNumber' },
     { header: 'No. préstamo', accessor: 'operationNumber' },
     { header: 'Código bien', accessor: 'assetCode' },
-    { header: 'Tipo bien', accessor: 'assetType' },
+    { header: 'Tipo bien', accessor: 'assetType', render: (row) => assetTypeMap[row.assetType] || row.assetType },
     { header: 'Emisor', accessor: 'issuer' },
     { header: 'Fecha de emisión', accessor: 'issueDate' },
     { header: 'Fecha vencimiento', accessor: 'maturityDate' },
@@ -30,7 +59,7 @@ export function StructureC04() {
     { header: 'Valor provisión', accessor: 'provisionValue' },
     { header: 'Fecha realización', accessor: 'realizationDate' },
     { header: 'Valor realización', accessor: 'realizationValue' },
-    { header: 'Estado', accessor: 'recordStatus' },
+    { header: 'Estado', accessor: 'recordStatus', render: (row) => recordStatusMap[row.recordStatus] || row.recordStatus },
   ];
 
   const handleAdd = () => {
@@ -44,7 +73,7 @@ export function StructureC04() {
   };
 
   const handleDelete = (id) => {
-    if (confirm('Are you sure you want to delete this record?')) {
+    if (confirm('¿Estás seguro de eliminar este registro?')) {
       deleteRecord('c04', id);
     }
   };
@@ -60,14 +89,14 @@ export function StructureC04() {
 
   const handleGenerate = () => {
     console.log('Generating export for C04:', data);
-    alert('Export generated to console (JSON format).');
+    alert('Exportación generada en consola (formato JSON).');
   };
 
   return (
     <Box>
       <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
          <Typography variant="h5" component="h1" fontWeight="bold">
-            Structure C04
+            Estructura C04
          </Typography>
          <Box sx={{ display: 'flex', gap: 2 }}>
             <Button 
@@ -75,14 +104,14 @@ export function StructureC04() {
                 startIcon={<DownloadIcon />} 
                 onClick={handleGenerate}
             >
-                Generate
+                Generar
             </Button>
             <Button 
                 variant="contained" 
                 startIcon={<AddIcon />} 
                 onClick={handleAdd}
             >
-                Add Record
+                Agregar Registro
             </Button>
          </Box>
       </Box>
@@ -97,7 +126,7 @@ export function StructureC04() {
       <Modal
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
-        title={editingRecord ? 'Edit Record' : 'New Record'}
+        title={editingRecord ? 'Editar Registro' : 'Nuevo Registro'}
       >
         <StructureC04Form
           initialData={editingRecord}

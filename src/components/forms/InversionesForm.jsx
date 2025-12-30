@@ -86,7 +86,34 @@ export function InversionesForm({ onSubmit, onCancel, structure = 'i01', initial
   };
 
   // Helper to format label
-  const getLabel = (key) => key.replace(/([A-Z])/g, ' $1').trim().replace(/^\w/, c => c.toUpperCase());
+  const getLabel = (key) => {
+    const labels = {
+        instrumentNumber: "No. Instrumento",
+        issuerIdType: "Tipo ID Emisor",
+        issuerId: "ID Emisor",
+        issueDate: "Fecha Emisión",
+        purchaseDate: "Fecha Compra",
+        instrumentType: "Tipo Instrumento",
+        issuerCountry: "País Emisor",
+        nominalValueUsd: "Valor Nominal USD",
+        purchaseValueUsd: "Valor Compra USD",
+        couponPaymentPeriodDays: "Días Pago Cupón",
+        issuerClassification: "Clasificación Emisor",
+        issuerType: "Tipo Emisor",
+        maturityDate: "Fecha Vencimiento",
+        riskRating: "Calif. Riesgo",
+        ratingAgency: "Agencia Calif.",
+        lastRatingDate: "Fecha Últ. Calif.",
+        accountCode: "Cuenta Contable",
+        bookValueUsd: "Valor Libros USD",
+        instrumentStatus: "Estado Instrumento",
+        nominalInterestRate: "Tasa Interés Nom.",
+        accruedInterestUsd: "Interés Devengado",
+        regulatoryRiskRating: "Calif. Riesgo Reg.",
+        provisionAmountUsd: "Provisión USD"
+    };
+    return labels[key] || key;
+  };
 
   const currentFields = structures[structure] || [];
 
