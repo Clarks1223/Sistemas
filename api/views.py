@@ -37,3 +37,67 @@ class StructureI02ViewSet(viewsets.ReadOnlyModelViewSet):
             I02Service.create_i02_from_payload(serializer.validated_data)
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+from api.utils import crm_processor
+from api.serializers import CRMUploadSerializer
+
+class CRMUploadViewSet(viewsets.ViewSet):
+    """
+    ViewSet to handle CRM file uploads (judicial, vigente, clientes).
+    Processes files in-memory to generate TXT and upload via SFTP.
+    """
+    serializer_class = CRMUploadSerializer
+
+    @action(detail=False, methods=['post'], url_path='upload')
+    def upload(self, request):
+        serializer = CRMUploadSerializer(data=request.data)
+        if not serializer.is_valid():
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+        files_data = serializer.validated_data
+        
+        results = []
+        errors = []
+
+        # Process each file
+        # We need to process 'judicial', 'vigente', 'clientes'
+        
+        for key, file_obj in files_data.items():
+            # file_obj is an UploadedFile, acts as stream
+            
+            # Step 1: Detect type and get remote name using NEW strict key logic
+            tipo, base_salida = crm_processor.obtener_configuracion_salida(key)
+            
+            if not tipo or not base_salida:
+                # Esto no deberia ocurrir dada la validacion previa del serializer y keys fijas
+                errors.append(f"Clave de archivo desconocida: {key}")
+                continue
+
+            # Step 2: Convert Excel stream to TXT stream
+            # file_obj is readable.
+            txt_stream = crm_processor.excel_a_texto_stream(file_obj, base_salida)
+            
+            if not txt_stream:
+                errors.append(f"Error procesando contenido de {file_obj.name}")
+                continue
+
+            # Step 3: Upload to SFTP
+            success, msg = crm_processor.cargar_archivo_sftp_stream(txt_stream, base_salida, tipo)
+            
+            if success:
+                results.append(f"{file_obj.name} -> {base_salida} (Subido)")
+            else:
+                errors.append(f"Fallo subida SFTP para {file_obj.name}: {msg}")
+
+        if errors:
+            return Response({
+                "status": "partial_success" if results else "error",
+                "processed": results,
+                "errors": errors
+            }, status=status.HTTP_500_INTERNAL_SERVER_ERROR if not results else status.HTTP_207_MULTI_STATUS)
+
+        return Response({
+            "status": "success",
+            "message": "Todos los archivos procesados y subidos exitosamente",
+            "details": results
+        }, status=status.HTTP_200_OK)
