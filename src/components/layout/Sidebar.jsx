@@ -15,6 +15,7 @@ import DashboardIcon from '@mui/icons-material/Dashboard';
 import StorageIcon from '@mui/icons-material/Storage';
 import TrendingUpIcon from '@mui/icons-material/TrendingUp';
 import SecurityIcon from '@mui/icons-material/Security';
+import CloudUploadIcon from '@mui/icons-material/CloudUpload';
 
 const drawerWidth = 240;
 
@@ -26,6 +27,7 @@ export function Sidebar({ variant = 'permanent', open, onClose }) {
     { path: '/c04', label: 'Estructura C04', icon: StorageIcon },
     { path: '/i01', label: 'Estructura I01', icon: TrendingUpIcon },
     { path: '/i02', label: 'Estructura I02', icon: SecurityIcon },
+    { path: '/crm', label: 'Carga CRM', icon: CloudUploadIcon },
   ];
 
   const drawerContent = (

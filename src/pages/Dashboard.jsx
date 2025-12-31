@@ -12,13 +12,14 @@ import {
 import StorageIcon from '@mui/icons-material/Storage';
 import TrendingUpIcon from '@mui/icons-material/TrendingUp';
 import SecurityIcon from '@mui/icons-material/Security';
+import CloudUploadIcon from '@mui/icons-material/CloudUpload';
 
 export function Dashboard() {
   const cards = [
-    { title: 'Archivos Cartera', path: '/c04', icon: StorageIcon, desc: 'Carga de archivos de cartera' },
     { title: 'Estructura C04', path: '/c04', icon: StorageIcon, desc: 'Administracion de estructura C04' },
     { title: 'Estructura I01', path: '/i01', icon: TrendingUpIcon, desc: 'Administracion de estructura I01' },
     { title: 'Estructura I02', path: '/i02', icon: SecurityIcon, desc: 'Administracion de estructura I02' },
+    { title: 'Carga CRM', path: '/crm', icon: CloudUploadIcon, desc: 'Carga de archivos de Cartera y Clientes' },
   ];
 
   return (

@@ -9,6 +9,7 @@ import { Dashboard } from './pages/Dashboard';
 import { StructureC04 } from './pages/StructureC04';
 import { StructureI01 } from './pages/StructureI01';
 import { StructureI02 } from './pages/StructureI02';
+import { CargaCRM } from './pages/CargaCRM';
 
 function App() {
   return (
@@ -22,6 +23,7 @@ function App() {
               <Route path="c04" element={<StructureC04 />} />
               <Route path="i01" element={<StructureI01 />} />
               <Route path="i02" element={<StructureI02 />} />
+              <Route path="crm" element={<CargaCRM />} />
             </Route>
           </Routes>
         </BrowserRouter>
