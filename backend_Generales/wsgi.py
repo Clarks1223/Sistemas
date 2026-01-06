@@ -10,7 +10,7 @@ https://docs.djangoproject.com/en/6.0/howto/deployment/wsgi/
 import os
 
 from django.core.wsgi import get_wsgi_application
-
-os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'backend_Generales.settings')
+settings_module = 'backend_Generales.deployment' if 'WEBSITE_HOSTNAME' in os.environ else 'backend_Generales.settings'
+os.environ.setdefault('DJANGO_SETTINGS_MODULE', settings_module)
 
 application = get_wsgi_application()
