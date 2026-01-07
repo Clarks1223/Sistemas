@@ -1,3 +1,5 @@
+from rest_framework import serializers
+
 class CRMUploadSerializer(serializers.Serializer):
     judicial = serializers.FileField()
     vigente = serializers.FileField()
