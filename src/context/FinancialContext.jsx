@@ -1,15 +1,12 @@
 import { createContext, useReducer, useEffect } from 'react';
-import c04DataMock from '../json/c04.json'; // Backup/Initial Loading
-import i01Data from '../json/i01.json';
-import i02Data from '../json/i02.json';
 import { c04Service } from '../services/api';
 
 export const FinancialContext = createContext();
 
 const initialState = {
-  c04: [], // Start empty, load from API
-  i01: i01Data,
-  i02: i02Data,
+  c04: [], 
+  i01: [],
+  i02: [],
   loading: { c04: false },
   error: { c04: null }
 };
@@ -74,6 +71,28 @@ export function FinancialProvider({ children }) {
         }
     };
     fetchC04();
+
+    // Conditionally load local JSONs if they exist (avoids build error if missing)
+    const loadLocalData = async () => {
+        try {
+            // Use Vite's glob import to detect presence of files without breaking build
+            const jsonFiles = import.meta.glob('../json/*.json');
+            
+            if (jsonFiles['../json/i01.json']) {
+                const mod = await jsonFiles['../json/i01.json']();
+                dispatch({ type: SET_RECORDS, payload: { structure: 'i01', data: mod.default } });
+            }
+            
+            if (jsonFiles['../json/i02.json']) {
+                 const mod = await jsonFiles['../json/i02.json']();
+                 dispatch({ type: SET_RECORDS, payload: { structure: 'i02', data: mod.default } });
+            }
+        } catch (err) {
+            console.warn("Could not load local JSON data", err);
+        }
+    };
+    loadLocalData();
+
   }, []);
 
   const addRecord = async (structure, record) => {
