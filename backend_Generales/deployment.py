@@ -4,6 +4,7 @@ from .settings import BASE_DIR
 
 ALLOWED_HOSTS = [os.environ['WEBSITE_HOSTNAME']] if 'WEBSITE_HOSTNAME' in os.environ else []
 CSRF_TRUSTED_ORIGINS = [f"https://{os.environ['WEBSITE_HOSTNAME']}"] if 'WEBSITE_HOSTNAME' in os.environ else []
+CSRF_TRUSTED_ORIGINS.append("https://gentle-cliff-08a42540f.1.azurestaticapps.net")
 DEBUG = False
 
 MIDDLEWARE = [
@@ -21,6 +22,9 @@ MIDDLEWARE = [
 CORS_ALLOWED_ORIGINS = [
     "https://gentle-cliff-08a42540f.1.azurestaticapps.net",
 ]
+
+CORS_ALLOW_ALL_ORIGINS = False
+CORS_ALLOW_CREDENTIALS = True
 
 STORAGES = {
     "default": {
