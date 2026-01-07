@@ -1,7 +1,12 @@
 import axios from 'axios';
 
+const isDevelopment = import.meta.env.MODE === 'development';
+const baseurl = isDevelopment
+  ? import.meta.env.VITE_BACKEND_DEV
+  : import.meta.env.VITE_BACKEND_PROD;
+
 const api = axios.create({
-  baseURL: import.meta.env.VITE_BACKEND + '/api/',
+  baseURL: baseurl + '/api/',
   headers: {
     'Content-Type': 'application/json',
   },
