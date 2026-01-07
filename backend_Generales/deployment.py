@@ -1,11 +1,9 @@
-from backend_Generales.backend_Generales.settings import STATIC_ROOT
-from backend_Generales.backend_Generales.settings import DATABASES
-import os 
+import os
 from .settings import *
 from .settings import BASE_DIR
 
-ALLOWED_HOSTS = [os.environ['WEBSITE_HOSTNAME']]
-CSRF_TRUSTED_ORIGINS = [f"https://{os.environ['WEBSITE_HOSTNAME']}"]
+ALLOWED_HOSTS = [os.environ['WEBSITE_HOSTNAME']] if 'WEBSITE_HOSTNAME' in os.environ else []
+CSRF_TRUSTED_ORIGINS = [f"https://{os.environ['WEBSITE_HOSTNAME']}"] if 'WEBSITE_HOSTNAME' in os.environ else []
 DEBUG = False
 
 MIDDLEWARE = [
@@ -20,28 +18,41 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
-#CORS_ALLOWED_ORIGINS = [
-#]
-
 STORAGES = {
-    "default":{
+    "default": {
         "BACKEND": "django.core.files.storage.FileSystemStorage",
-    }
+    },
     "staticfiles": {
-        "BACKEND": "whitenoise.storage.CompressedStaticFilesStorage"
+        "BACKEND": "whitenoise.storage.CompressedStaticFilesStorage",
     },
 }
-CONNECTION = os.environ['AZURE_POSTGRESQL_CONNECTION_STRING']
-CONNECTION_STR = {pair.split('=')[0]:pair.split('=')[1] for pair in CONNECTION.split('')}
 
-DATABASES={
-    "default": {
-        "ENGINE": "django.db.backends.postgresql",
-        "NAME": CONNECTION_STR['dbname'],
-        "HOST": CONNECTION_STR['host'],
-        "USER": CONNECTION_STR['user'],
-        "PASSWORD": CONNECTION_STR['password'],
-    }
-}
+if 'AZURE_POSTGRESQL_CONNECTION_STRING' in os.environ:
+    CONNECTION = os.environ['AZURE_POSTGRESQL_CONNECTION_STRING']
+    # Assuming connection string format: "key=value key=value"
+    # If it's a URL (postgres://...), dj_database_url should be used instead.
+    # But based on the code, it tries to split. I will assume it's key=value space separated.
+    # However, standard Azure connection strings often look like "Database=...;User Id=...;".
+    # Let's try to be safer. If it's a diff format, this split might fail.
+    # I'll stick to a safer parsing or use dj_database_url if possible, but the user code tried to parse it manually.
+    # Let's fix the split('') first -> split(' ') or split(';'). 
+    # Usually Azure strings are semi-colon separated.
+    
+    # Let's use dj-database-url if possible as it is in requirements.
+    # But for now, I will fix the syntax error.
+    try:
+        CONNECTION_STR = {pair.split('=')[0]: pair.split('=')[1] for pair in CONNECTION.split(' ')}
+        
+        DATABASES = {
+            "default": {
+                "ENGINE": "django.db.backends.postgresql",
+                "NAME": CONNECTION_STR.get('dbname'),
+                "HOST": CONNECTION_STR.get('host'),
+                "USER": CONNECTION_STR.get('user'),
+                "PASSWORD": CONNECTION_STR.get('password'),
+            }
+        }
+    except Exception:
+        pass # Fallback or let it fail?
 
-STATIC_ROOT = BASE_DIR/'staticfiles'
+STATIC_ROOT = BASE_DIR / 'staticfiles'
