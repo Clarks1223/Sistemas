@@ -8,10 +8,10 @@ CSRF_TRUSTED_ORIGINS.append("https://gentle-cliff-08a42540f.1.azurestaticapps.ne
 DEBUG = False
 
 MIDDLEWARE = [
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
-    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -21,9 +21,10 @@ MIDDLEWARE = [
 
 CORS_ALLOWED_ORIGINS = [
     "https://gentle-cliff-08a42540f.1.azurestaticapps.net",
+    "https://gentle-cliff-08a42540f.azurestaticapps.net",
 ]
 
-CORS_ALLOW_ALL_ORIGINS = False
+CORS_ALLOW_ALL_ORIGINS = True
 CORS_ALLOW_CREDENTIALS = True
 
 STORAGES = {
